@@ -9,7 +9,19 @@ class Thread extends Model
     
     protected $guarded = [];
 
-	public function path()
+    protected static function boot()
+    {
+
+        parent::boot();
+
+        static::addGlobalScope('replyCount', function ( $builder ){
+            $builder->withCount( 'replies' );
+        });
+
+
+    }
+
+    public function path()
 	{
 
         return "/threads/{$this->channel->slug}/{$this->id}";
@@ -39,17 +51,27 @@ class Thread extends Model
 
     }
 
-	public function addReply( $reply )
+    /**
+     * @param $reply
+     */
+    public function addReply($reply )
 	{
 		$this->replies()->create( $reply );
 	}
 
 
-	public function scopeFilter( $query, $filters )
+    /**
+     * @param $query
+     * @param $filters
+     * @return mixed
+     */
+    public function scopeFilter($query, $filters )
     {
 
         return $filters->apply( $query );
 
     }
+
+
 
 }
