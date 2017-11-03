@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ThreadFilters extends Filters
 {
     //All of the filters we can respond to
-    protected $filters = ['by'];
+    protected $filters = ['by', 'popular'];
 
     /**
      * Filter a query by a given username
@@ -23,6 +23,21 @@ class ThreadFilters extends Filters
         $user = User::where('name', $username)->firstorFail();
 
         return $this->builder->where('user_id', $user->id);
+    }
+
+    /**
+     * Filter the query by most popular threads
+     *
+     * @return $this
+     */
+    protected function popular()
+    {
+        //this removes pre-set latest() from original query in getPost in controller
+        $this->builder->getQuery()->orders = [];
+
+        return $this->builder->orderBy( 'replies_count', 'desc' );
+
+
     }
 
 

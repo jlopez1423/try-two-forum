@@ -24,16 +24,12 @@ class ThreadController extends Controller
     public function index( Channel $channel, ThreadFilters $filters )
     {
 
-        if ($channel->exists) {
+        $threads = $this->getThreads($channel, $filters);
 
-            $threads = $channel->threads()->latest();
-
-        } else {
-
-            $threads = Thread::latest();
+        if( request()->wantsJson() ) {
+            return $threads;
         }
 
-        $threads = $threads->filter( $filters )->get();
 
         return view( 'threads.index', compact( 'threads' ) );
         
@@ -130,15 +126,22 @@ class ThreadController extends Controller
         //
     }
 
-//    /**
-//     * @param Channel $channel
-//     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection|static
-//     */
-//    protected function getThreads(Channel $channel)
-//    {
-//
-//        return $threads;
-//    }
+    /**
+     * @param Channel $channel
+     * @param ThreadFilters $filters
+     * @return \Illuminate\Database\Query\Builder|static
+     */
+    protected function getThreads(Channel $channel, ThreadFilters $filters)
+    {
+        $threads = Thread::latest()->filter($filters);
 
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        return $threads->get();
+    }
 
 }
+
+
