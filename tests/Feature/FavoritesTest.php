@@ -58,8 +58,6 @@ class FavoritesTest extends TestCase
         }
 
 
-
-
         //It should be recorded in the database
         $this->assertCount( 1, $reply->favorites );
 

@@ -20,23 +20,14 @@ class FavoritesController extends Controller
 
     /**
      * @param Reply $reply
+     *
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function store( Reply $reply )
     {
 
         return $reply->favorite();
 
-        //        $reply->favorites()->create( ['user_id' => auth()->id() ] );
-
-//        return Favorite::create( [
-//
-//            'user_id' => auth()->id(),
-//
-//            'favorited_id' => $reply->id,
-//
-//            'favorited_type' => get_class( $reply )
-//
-//        ] );
 
     }
 
